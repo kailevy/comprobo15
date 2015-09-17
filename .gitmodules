@@ -1,3 +1,6 @@
 [submodule "getting_familiar"]
 	path = getting_familiar
 	url = https://github.com/kailevy/comprobolab1
+[submodule "warmup_project"]
+	path = warmup_project
+	url = https://github.com/kailevy/comprobolab2
