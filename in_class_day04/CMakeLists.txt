@@ -5,8 +5,8 @@ project(in_class_day04)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  gemotry_msgs
-  navigation_msgs
+  geometry_msgs
+  nav_msgs
   rospy
   sensor_msgs
   std_msgs
