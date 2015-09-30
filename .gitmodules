@@ -4,3 +4,6 @@
 [submodule "warmup_project"]
 	path = warmup_project
 	url = https://github.com/kailevy/comprobolab2
+[submodule "particle-filter"]
+	path = particle-filter
+	url = https://github.com/kailevy/particle-filter
