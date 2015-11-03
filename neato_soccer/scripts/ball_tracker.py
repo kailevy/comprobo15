@@ -12,6 +12,9 @@ import numpy as np
 from geometry_msgs.msg import Twist, Vector3
 from time import sleep
 
+from dynamic_reconfigure.server import Server
+from neato_soccer.cfg import NeatoSoccerConfig
+
 class BallTracker(object):
     """ The BallTracker is a Python object that encompasses a ROS node
         that can process images from the camera and search for a ball within.
@@ -27,9 +30,10 @@ class BallTracker(object):
 
         rospy.Subscriber(image_topic, Image, self.process_image)
         self.pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
-
+        self.srv = Server(NeatoSoccerConfig, self.config_callback)
         self.Kp = -0.005
-
+        self.yellow_min = 0
+        self.yellow_max = 255
 
         cv2.namedWindow('video_window')
         cv2.namedWindow('binary_window')
@@ -42,12 +46,19 @@ class BallTracker(object):
         """ Process image messages from ROS and stash them in an attribute
             called cv_image for subsequent processing """
         self.cv_image = self.bridge.imgmsg_to_cv2(msg, desired_encoding="bgr8")
-        self.binary_image = cv2.inRange(self.cv_image, (0,0,50), (20,20,255))
+        self.binary_image = cv2.inRange(self.cv_image, (0,0,self.yellow_min), (20,20,self.yellow_max))
 
         #print self.cv_image.shape
         cv2.imshow('video_window', self.cv_image)
         cv2.imshow('binary_window', self.binary_image)
         cv2.waitKey(5)
+
+    def config_callback(self, config, level):
+        rospy.loginfo("""Reconfigure Request: {yellow_min}, {yellow_max}""".format(**config))
+        self.yellow_min = config.yellow_min
+        self.yellow_max = config.yellow_max
+        return config
+
 
     def set_red_lower_bound(self, val):
         """ A callback function to handle the OpenCV slider to select the red lower bound """
@@ -90,7 +101,7 @@ class BallTracker(object):
 
             control = self.Kp * offset
             twist = Twist(linear=Vector3(x=linVel,y=0,z=0), angular=Vector3(z=control))
-            self.pub.publish(twist)
+            # self.pub.publish(twist)
             r.sleep()
 
 if __name__ == '__main__':
