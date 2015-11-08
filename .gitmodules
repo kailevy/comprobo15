@@ -10,3 +10,6 @@
 [submodule "robot-street-signs"]
 	path = robot-street-signs
 	url = https://github.com/DakotaNelson/robot-street-signs
+[submodule "sketchibot"]
+	path = sketchibot
+	url = https://github.com/kailevy/sketchibot
